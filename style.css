@@ -1,6 +1,7 @@
 div {
     font-family: "Georgia", serif;
     /* border: 1px solid black; */
+    margin-inline: auto;
 }
 
 #mortgage_inputs {
@@ -20,4 +21,5 @@ div {
 
 #mortgage_lifecycle_div {
     width: fit-content;
+    margin-inline: auto;
 }
