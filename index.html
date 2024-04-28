@@ -4,13 +4,16 @@
 </head>
 
 <body>
-<form id="mortgage_inputs">
+
+<div id="mortgage_basics_div">
+<form id="mortgage_basics">
+    <h2>Mortgage basics</h2>
     <label for="total_millies">Total Price ($M)</label><br>
-    <input type="text" id="total_millies" value="1.5"><br>
+    <input type="text" id="total_millies" value="1.2"><br>
     <label for="total_dollies">Total Price ($)</label><br>
     <input type="text" id="total_dollies" readonly><br>
     <label for="deposit">Deposit ($)</label><br>
-    <input type="text" id="deposit" value="500000"><br>
+    <input type="text" id="deposit" value="300000"><br>
     <label for="remaining">Remaining Principle ($)</label><br>
     <input type="text" id="remaining" readonly><br>
     <label for="ratepa">Interest rate (% p.a.)</label><br>
@@ -22,9 +25,25 @@
     <label for="paymentper">Payment per month</label><br>
     <input type="text" id="paymentper" readonly><br>
 </form>
+</div>
+
+<div id="offset_account_div">
+<form id="offset_account">
+    <h2>Offset account</h2>
+    <label for="offset_starting">Starting Contribution ($)</label><br>
+    <input type="text" id="offset_starting" value="20000"><br>
+    <label for="offset_annual">Annual Contribution ($)</label><br>
+    <input type="text" id="offset_annual" value="10000"><br>
+    <label for="offset_monthly">Monthly Contribution ($)</label><br>
+    <input type="text" id="offset_monthly" value="1000"><br>
+</form>
+</div>
 
 <!-- The mortgage lifecycle -->
-<table></table>
+<div id="mortgage_lifecycle_div">
+<h2>Mortgage lifecycle</h2>
+<table id="mortgage_lifecycle_table"></table>
+</div>
 
 <script type="text/javascript" src="mortgauge.js"></script>
 </body>

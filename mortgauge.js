@@ -25,8 +25,19 @@ termyears.addEventListener("input", function (e) {
     update_all_derived_input_params();
     update_table();
 });
-// TODO: Okay this is an insufficient number of listeners to update this field
 ratepa.addEventListener("input", function (e) {
+    update_all_derived_input_params();
+    update_table();
+});
+offset_starting.addEventListener("input", function (e) {
+    update_all_derived_input_params();
+    update_table();
+});
+offset_annual.addEventListener("input", function (e) {
+    update_all_derived_input_params();
+    update_table();
+});
+offset_monthly.addEventListener("input", function (e) {
     update_all_derived_input_params();
     update_table();
 });
@@ -58,33 +69,53 @@ function payment_per_term(principal, rate_per_period, num_periods)
 
 function update_table()
 {
-    document.querySelector("table").innerHTML = '';
+    var mortgage_lifecycle_table = document.getElementById("mortgage_lifecycle_table");
+
+    mortgage_lifecycle_table.innerHTML = '';
 
     const d = new Date();
     var current_month = d.getMonth();
     var current_year  = d.getFullYear();
-    var remaining_loan = remaining.value;
+    var remaining_loan = +remaining.value;
 
     var interest_amount  = 0;
     var principal_amount = 0;
+    var offset_account_deposit = 0;
 
-    
+    var offset_account_balance = 0;
 
     /* Title Row */
-    var row = document.querySelector("table").insertRow();
+    var row = mortgage_lifecycle_table.insertRow();
     row.insertCell().innerHTML = 'Date';
     row.insertCell().innerHTML = 'Payment Number';
     row.insertCell().innerHTML = 'Payment Amount';
     row.insertCell().innerHTML = 'Interest';
     row.insertCell().innerHTML = 'Principal';
     row.insertCell().innerHTML = 'Loan';
+    row.insertCell().innerHTML = 'Offset Account Deposit'
+    row.insertCell().innerHTML = 'Offset Account Balance'
+    row.insertCell().innerHTML = 'Effective Debt'
 
     for (var i=0; i < numpayments.value; i++) {
-        var row = document.querySelector("table").insertRow();
+        var row = mortgage_lifecycle_table.insertRow();
 
         /* Date */
         let year_add = (d.getMonth() + i) / 12;
-        row.insertCell().innerHTML = ((current_month + i) % 12 + 1) + '/' + Math.floor(current_year + year_add);
+        let month_num = (current_month + i) % 12 + 1;
+
+        /* Offset deposits */
+        let deposit_if_not_starting = (month_num == 1) ? (+offset_annual.value + +offset_monthly.value) : +offset_monthly.value;
+        let deposit = (i == 0) ? +offset_starting.value : deposit_if_not_starting;
+
+        /* Loan calcs */
+        offset_account_deposit = round2dp(deposit);
+        offset_account_balance = round2dp(offset_account_balance + offset_account_deposit);
+        effective_debt = round2dp(remaining_loan - offset_account_balance);
+        effective_debt = Math.max(0, effective_debt);
+        interest_amount = round2dp(effective_debt * ratepa.value / 100 / 12);
+        principal_amount = paymentper.value - interest_amount;
+
+        row.insertCell().innerHTML = (month_num) + '/' + Math.floor(current_year + year_add);
 
         /* Payment Number */
         row.insertCell().innerHTML = i + 1;
@@ -93,18 +124,27 @@ function update_table()
         row.insertCell().innerHTML = paymentper.value;
 
         /* Interest paid */
-        interest_amount = remaining_loan * ratepa.value / 100 / 12;
         row.insertCell().innerHTML = round2dp(interest_amount);
 
         /* Principal paid */
-        principal_amount = paymentper.value - interest_amount;
         row.insertCell().innerHTML = round2dp(principal_amount);
 
         /* Loan remaining */
-        remaining_loan = round2dp(remaining_loan - principal_amount);       
         row.insertCell().innerHTML = remaining_loan;
 
-        
+        /* Offset deposit */
+        row.insertCell().innerHTML = offset_account_deposit;
+
+        /* Offset balance */
+        row.insertCell().innerHTML = offset_account_balance;
+
+        /* Effective debt */
+        row.insertCell().innerHTML = effective_debt;
+
+        remaining_loan = round2dp(remaining_loan - principal_amount);
+        remaining_loan = Math.max(0, remaining_loan);
+
+        if (remaining_loan == 0) break;
 
     }
 }
