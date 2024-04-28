@@ -1,0 +1,23 @@
+div {
+    font-family: "Georgia", serif;
+    /* border: 1px solid black; */
+}
+
+#mortgage_inputs {
+    height: fit-content;
+    width: fit-content;
+    overflow: hidden;
+}
+
+#mortgage_basics_div {
+    padding-right: 50px;
+    float: left;
+ }
+
+#offset_account_div {
+    float: left;
+}
+
+#mortgage_lifecycle_div {
+    width: fit-content;
+}
