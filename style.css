@@ -23,3 +23,8 @@ div {
     width: fit-content;
     margin-inline: auto;
 }
+
+th, td {
+    border-top: 1px solid #ddd;
+    text-align: center;
+}

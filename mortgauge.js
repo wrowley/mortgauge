@@ -67,6 +67,18 @@ function payment_per_term(principal, rate_per_period, num_periods)
     return numerator/denominator;
 }
 
+function as_currency(number)
+{
+    return '$'+Number(number).toLocaleString(undefined, { minimumFractionDigits: 2});
+}
+
+function header_cell(textContent)
+{
+    let headerCell = document.createElement("th");
+    headerCell.textContent = textContent;
+    return headerCell;
+}
+
 function update_table()
 {
     var mortgage_lifecycle_table = document.getElementById("mortgage_lifecycle_table");
@@ -84,17 +96,21 @@ function update_table()
 
     var offset_account_balance = 0;
 
-    /* Title Row */
-    var row = mortgage_lifecycle_table.insertRow();
-    row.insertCell().innerHTML = 'Date';
-    row.insertCell().innerHTML = 'Payment Number';
-    row.insertCell().innerHTML = 'Payment Amount';
-    row.insertCell().innerHTML = 'Interest';
-    row.insertCell().innerHTML = 'Principal';
-    row.insertCell().innerHTML = 'Loan';
-    row.insertCell().innerHTML = 'Offset Account Deposit'
-    row.insertCell().innerHTML = 'Offset Account Balance'
-    row.insertCell().innerHTML = 'Effective Debt'
+    /* Header Row */
+    let headerRow = document.createElement("tr");
+    headerRow.appendChild(header_cell("Date"));
+    headerRow.appendChild(header_cell("Payment Number"));
+    headerRow.appendChild(header_cell("Payment Amount"));
+    headerRow.appendChild(header_cell("Interest"));
+    headerRow.appendChild(header_cell("Principal"));
+    headerRow.appendChild(header_cell("Loan"));
+    headerRow.appendChild(header_cell("Offset Account Deposit"));
+    headerRow.appendChild(header_cell("Offset Account Balance"));
+    headerRow.appendChild(header_cell("Effective Debt"));
+    mortgage_lifecycle_table.appendChild(headerRow);
+
+    /* Initialise payment amount at the full amount */
+    payment_amount = paymentper.value;
 
     for (var i=0; i < numpayments.value; i++) {
         var row = mortgage_lifecycle_table.insertRow();
@@ -113,7 +129,11 @@ function update_table()
         effective_debt = round2dp(remaining_loan - offset_account_balance);
         effective_debt = Math.max(0, effective_debt);
         interest_amount = round2dp(effective_debt * ratepa.value / 100 / 12);
-        principal_amount = paymentper.value - interest_amount;
+        if (remaining_loan < payment_amount)
+        {
+            payment_amount = remaining_loan;
+        }
+        principal_amount = payment_amount;
 
         row.insertCell().innerHTML = (month_num) + '/' + Math.floor(current_year + year_add);
 
@@ -121,30 +141,31 @@ function update_table()
         row.insertCell().innerHTML = i + 1;
 
         /* Payment Amount */
-        row.insertCell().innerHTML = paymentper.value;
+        row.insertCell().innerHTML = as_currency(payment_amount);
 
         /* Interest paid */
-        row.insertCell().innerHTML = round2dp(interest_amount);
+        row.insertCell().innerHTML = as_currency(round2dp(interest_amount));
 
         /* Principal paid */
-        row.insertCell().innerHTML = round2dp(principal_amount);
+        row.insertCell().innerHTML = as_currency(round2dp(principal_amount));
 
         /* Loan remaining */
-        row.insertCell().innerHTML = remaining_loan;
+        row.insertCell().innerHTML = as_currency(remaining_loan);
 
         /* Offset deposit */
-        row.insertCell().innerHTML = offset_account_deposit;
+        row.insertCell().innerHTML = as_currency(offset_account_deposit);
 
         /* Offset balance */
-        row.insertCell().innerHTML = offset_account_balance;
+        row.insertCell().innerHTML = as_currency(offset_account_balance);
 
         /* Effective debt */
-        row.insertCell().innerHTML = effective_debt;
+        row.insertCell().innerHTML = as_currency(effective_debt);
+
+        if (remaining_loan == 0) break;
 
         remaining_loan = round2dp(remaining_loan - principal_amount);
         remaining_loan = Math.max(0, remaining_loan);
 
-        if (remaining_loan == 0) break;
 
     }
 }
