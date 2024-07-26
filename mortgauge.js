@@ -8,6 +8,10 @@ const ratepa = document.getElementById("ratepa");
 const termyears = document.getElementById("termyears");
 const numpayments = document.getElementById("numpayments");
 const paymentper = document.getElementById("paymentper");
+const totalinterest = document.getElementById("totalinterest");
+
+var payment_per_period = 0;
+var total_interest_paid = 0;
 
 // On page load...
 update_all_derived_input_params();
@@ -53,7 +57,8 @@ function update_all_derived_input_params()
     remaining.value = total_dollies.value - deposit.value;
     numpayments.value = termyears.value * 12;
     ideal_payment = payment_per_term(remaining.value, ratepa.value/100/12, numpayments.value);
-    paymentper.value = round2dp(ideal_payment);
+    payment_per_period = round2dp(ideal_payment);
+    paymentper.value = as_currency(payment_per_period);
 }
 
 // Source: https://en.wikipedia.org/wiki/Mortgage_calculator
@@ -110,7 +115,9 @@ function update_table()
     mortgage_lifecycle_table.appendChild(headerRow);
 
     /* Initialise payment amount at the full amount */
-    payment_amount = paymentper.value;
+    payment_amount = payment_per_period;
+
+    total_interest_paid = 0;
 
     for (var i=0; i < numpayments.value; i++) {
         var row = mortgage_lifecycle_table.insertRow();
@@ -129,11 +136,12 @@ function update_table()
         effective_debt = round2dp(remaining_loan - offset_account_balance);
         effective_debt = Math.max(0, effective_debt);
         interest_amount = round2dp(effective_debt * ratepa.value / 100 / 12);
+        total_interest_paid += interest_amount;
         if (remaining_loan < payment_amount)
         {
             payment_amount = remaining_loan;
         }
-        principal_amount = payment_amount;
+        principal_amount = payment_amount - interest_amount;
 
         row.insertCell().innerHTML = (month_num) + '/' + Math.floor(current_year + year_add);
 
@@ -168,7 +176,6 @@ function update_table()
 
 
     }
+
+    totalinterest.value = as_currency(round2dp(total_interest_paid));
 }
-
-
-
