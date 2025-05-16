@@ -88,11 +88,7 @@ function header_cell(textContent)
     return headerCell;
 }
 
-function update_table_and_chart() {
-    update_table(true); // pass a flag to collect chart data
-}
-
-function update_table(collectChartData = false)
+function update_table_and_chart()
 {
     var mortgage_lifecycle_table = document.getElementById("mortgage_lifecycle_table");
 
@@ -170,32 +166,21 @@ function update_table(collectChartData = false)
         row.insertCell().innerHTML = as_currency(effective_debt);
 
         // Collect data for chart
-        if (collectChartData) {
-            // Only push a label for each January (start of year) or the first entry
-            if (month_num === 1 || i === 0) {
-                chartLabels.push(year_label.toString());
-            } else {
-                chartLabels.push('');
-            }
-            chartLoan.push(remaining_loan);
-            chartOffset.push(offset_account_balance);
-            chartEffective.push(effective_debt);
-        }
+        chartLabels.push(dateLabel);
+        chartLoan.push(remaining_loan);
+        chartOffset.push(offset_account_balance);
+        chartEffective.push(effective_debt);
 
         if (remaining_loan == 0) break;
 
         remaining_loan = round2dp(remaining_loan - principal_amount);
         remaining_loan = Math.max(0, remaining_loan);
 
-
     }
 
     totalinterest.value = as_currency(round2dp(total_interest_paid));
 
-    // Draw chart if needed
-    if (collectChartData) {
-        drawMortgageChart(chartLabels, chartLoan, chartOffset, chartEffective);
-    }
+    drawMortgageChart(chartLabels, chartLoan, chartOffset, chartEffective);
 }
 
 function drawMortgageChart(labels, loanData, offsetData, effectiveData) {
@@ -280,8 +265,7 @@ function drawMortgageChart(labels, loanData, offsetData, effectiveData) {
                     ticks: {
                         autoSkip: false,
                         callback: function(value, index, ticks) {
-                            // Only show year labels, skip empty ones
-                            return labels[index] !== '' ? labels[index] : '';
+                            return ((index % 12) == 6) ? labels[index].split('/')[1] : '';
                         },
                         font: {
                             size: 12
