@@ -13,37 +13,39 @@ const totalinterest = document.getElementById("totalinterest");
 var payment_per_period = 0;
 var total_interest_paid = 0;
 
+let mortgageChart = null;
+
 // On page load...
 update_all_derived_input_params();
-update_table();
+update_table_and_chart();
 
 total_millies.addEventListener("input", function (e) {
     update_all_derived_input_params();
-    update_table();
+    update_table_and_chart();
 });
 deposit.addEventListener("input", function (e) {
     update_all_derived_input_params();
-    update_table();
+    update_table_and_chart();
 });
 termyears.addEventListener("input", function (e) {
     update_all_derived_input_params();
-    update_table();
+    update_table_and_chart();
 });
 ratepa.addEventListener("input", function (e) {
     update_all_derived_input_params();
-    update_table();
+    update_table_and_chart();
 });
 offset_starting.addEventListener("input", function (e) {
     update_all_derived_input_params();
-    update_table();
+    update_table_and_chart();
 });
 offset_annual.addEventListener("input", function (e) {
     update_all_derived_input_params();
-    update_table();
+    update_table_and_chart();
 });
 offset_monthly.addEventListener("input", function (e) {
     update_all_derived_input_params();
-    update_table();
+    update_table_and_chart();
 });
 
 function round2dp(value)
@@ -84,7 +86,11 @@ function header_cell(textContent)
     return headerCell;
 }
 
-function update_table()
+function update_table_and_chart() {
+    update_table(true); // pass a flag to collect chart data
+}
+
+function update_table(collectChartData = false)
 {
     var mortgage_lifecycle_table = document.getElementById("mortgage_lifecycle_table");
 
@@ -100,6 +106,11 @@ function update_table()
     var offset_account_deposit = 0;
 
     var offset_account_balance = 0;
+
+    let chartLabels = [];
+    let chartLoan = [];
+    let chartOffset = [];
+    let chartEffective = [];
 
     /* Header Row */
     let headerRow = document.createElement("tr");
@@ -125,6 +136,7 @@ function update_table()
         /* Date */
         let year_add = (d.getMonth() + i) / 12;
         let month_num = (current_month + i) % 12 + 1;
+        let year_label = Math.floor(current_year + year_add);
 
         /* Offset deposits */
         let deposit_if_not_starting = (month_num == 1) ? (+offset_annual.value + +offset_monthly.value) : +offset_monthly.value;
@@ -143,31 +155,30 @@ function update_table()
         }
         principal_amount = payment_amount - interest_amount;
 
-        row.insertCell().innerHTML = (month_num) + '/' + Math.floor(current_year + year_add);
+        let dateLabel = (month_num) + '/' + year_label;
 
-        /* Payment Number */
+        row.insertCell().innerHTML = dateLabel;
         row.insertCell().innerHTML = i + 1;
-
-        /* Payment Amount */
         row.insertCell().innerHTML = as_currency(payment_amount);
-
-        /* Interest paid */
         row.insertCell().innerHTML = as_currency(round2dp(interest_amount));
-
-        /* Principal paid */
         row.insertCell().innerHTML = as_currency(round2dp(principal_amount));
-
-        /* Loan remaining */
         row.insertCell().innerHTML = as_currency(remaining_loan);
-
-        /* Offset deposit */
         row.insertCell().innerHTML = as_currency(offset_account_deposit);
-
-        /* Offset balance */
         row.insertCell().innerHTML = as_currency(offset_account_balance);
-
-        /* Effective debt */
         row.insertCell().innerHTML = as_currency(effective_debt);
+
+        // Collect data for chart
+        if (collectChartData) {
+            // Only push a label for each January (start of year) or the first entry
+            if (month_num === 1 || i === 0) {
+                chartLabels.push(year_label.toString());
+            } else {
+                chartLabels.push('');
+            }
+            chartLoan.push(remaining_loan);
+            chartOffset.push(offset_account_balance);
+            chartEffective.push(effective_debt);
+        }
 
         if (remaining_loan == 0) break;
 
@@ -178,4 +189,115 @@ function update_table()
     }
 
     totalinterest.value = as_currency(round2dp(total_interest_paid));
+
+    // Draw chart if needed
+    if (collectChartData) {
+        drawMortgageChart(chartLabels, chartLoan, chartOffset, chartEffective);
+    }
+}
+
+function drawMortgageChart(labels, loanData, offsetData, effectiveData) {
+    const ctx = document.getElementById('mortgageChart').getContext('2d');
+    if (mortgageChart) {
+        mortgageChart.data.labels = labels;
+        mortgageChart.data.datasets[0].data = loanData;
+        mortgageChart.data.datasets[1].data = offsetData;
+        mortgageChart.data.datasets[2].data = effectiveData;
+        mortgageChart.update();
+        return;
+    }
+    mortgageChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Loan Amount',
+                    data: loanData,
+                    borderColor: '#2a4365',
+                    backgroundColor: 'rgba(42,67,101,0.08)',
+                    fill: false,
+                    tension: 0.15,
+                    pointRadius: 0,
+                    borderWidth: 2
+                },
+                {
+                    label: 'Offset Account Balance',
+                    data: offsetData,
+                    borderColor: '#4299e1',
+                    backgroundColor: 'rgba(66,153,225,0.08)',
+                    fill: false,
+                    tension: 0.15,
+                    pointRadius: 0,
+                    borderWidth: 2
+                },
+                {
+                    label: 'Effective Debt',
+                    data: effectiveData,
+                    borderColor: '#e53e3e',
+                    backgroundColor: 'rgba(229,62,62,0.08)',
+                    fill: false,
+                    tension: 0.15,
+                    pointRadius: 0,
+                    borderWidth: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        font: { size: 14 }
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': $' + Number(context.parsed.y).toLocaleString(undefined, {minimumFractionDigits: 2});
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: 'nearest',
+                axis: 'x',
+                intersect: false
+            },
+            scales: {
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Year'
+                    },
+                    ticks: {
+                        autoSkip: false,
+                        callback: function(value, index, ticks) {
+                            // Only show year labels, skip empty ones
+                            return labels[index] !== '' ? labels[index] : '';
+                        },
+                        font: {
+                            size: 12
+                        }
+                    },
+                    grid: {
+                        display: false
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
 }

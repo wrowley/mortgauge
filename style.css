@@ -1,30 +1,148 @@
-div {
-    font-family: "Georgia", serif;
-    /* border: 1px solid black; */
-    margin-inline: auto;
+body {
+    background: linear-gradient(120deg, #f8fafc 0%, #e0e7ef 100%);
+    font-family: 'Roboto', 'Georgia', serif;
+    margin: 0;
+    padding: 0;
+    color: #222;
+}
+
+#container {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.2em;
+    color: #2a4365;
+    letter-spacing: 2px;
+}
+
+.subtitle {
+    color: #718096;
+    font-size: 1.1rem;
+    margin-top: 0;
 }
 
 #mortgage_inputs {
-    height: fit-content;
-    width: fit-content;
-    overflow: hidden;
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
 }
 
-#mortgage_basics_div {
-    padding-right: 50px;
-    float: left;
- }
+.card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(44, 62, 80, 0.08);
+    padding: 32px 28px 24px 28px;
+    margin-bottom: 24px;
+    min-width: 320px;
+    max-width: 380px;
+    flex: 1 1 340px;
+}
 
-#offset_account_div {
-    float: left;
+form h2 {
+    font-size: 1.3rem;
+    color: #2a4365;
+    margin-bottom: 18px;
+    font-weight: 700;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-weight: 500;
+    color: #374151;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    background: #f9fafb;
+    transition: border 0.2s;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border: 1.5px solid #4299e1;
+    outline: none;
+    background: #fff;
+}
+
+input[readonly] {
+    background: #e5e7eb;
+    color: #6b7280;
 }
 
 #mortgage_lifecycle_div {
-    width: fit-content;
     margin-inline: auto;
+    margin-top: 32px;
+    max-width: 100%;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+#mortgage_lifecycle_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(44, 62, 80, 0.04);
 }
 
 th, td {
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #e5e7eb;
     text-align: center;
+    padding: 10px 8px;
+    font-size: 0.98rem;
+}
+
+th {
+    background: #f1f5f9;
+    color: #2a4365;
+    font-weight: 700;
+    border-bottom: 2px solid #cbd5e1;
+}
+
+tr:nth-child(even) td {
+    background: #f9fafb;
+}
+
+tr:hover td {
+    background: #e0e7ef;
+    transition: background 0.2s;
+}
+
+@media (max-width: 900px) {
+    #mortgage_inputs {
+        flex-direction: column;
+        align-items: center;
+        gap: 18px;
+    }
+    .card {
+        min-width: 90vw;
+        max-width: 98vw;
+    }
+    #mortgage_lifecycle_div {
+        width: 98vw;
+    }
 }

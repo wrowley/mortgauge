@@ -1,53 +1,70 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<title>👍 mortgauge 👍</title>
+<title>🏠 mortgauge</title>
 <link rel="stylesheet" type="text/css" href="style.css">
+<link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+<!-- Add Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
 
-<div id="mortgage_inputs">
-<div id="mortgage_basics_div">
-<form id="mortgage_basics">
-    <h2>Mortgage basics</h2>
-    <label for="total_millies">Total Price ($M)</label><br>
-    <input type="text" id="total_millies" value="1.2"><br>
-    <label for="total_dollies">Total Price ($)</label><br>
-    <input type="text" id="total_dollies" readonly><br>
-    <label for="deposit">Deposit ($)</label><br>
-    <input type="text" id="deposit" value="300000"><br>
-    <label for="remaining">Remaining Principle ($)</label><br>
-    <input type="text" id="remaining" readonly><br>
-    <label for="ratepa">Interest rate (% p.a.)</label><br>
-    <input type="text" id="ratepa" value="6.5"><br>
-    <label for="termyears">Number of years</label><br>
-    <input type="text" id="termyears" value="30"><br>
-    <label for="numpayments">Number of payments</label><br>
-    <input type="text" id="numpayments" readonly><br>
-    <label for="paymentper">Payment per month</label><br>
-    <input type="text" id="paymentper" readonly><br>
-    <label for="totalinterest">Total interest payable</label><br>
-    <input type="text" id="totalinterest" readonly><br>
-</form>
-</div>
+<div id="container">
+    <header>
+        <h1>🏠 mortgauge</h1>
+        <p class="subtitle">Mortgage & Offset Account Calculator</p>
+    </header>
+    <div id="mortgage_inputs">
+        <div id="mortgage_basics_div" class="card">
+            <form id="mortgage_basics">
+                <h2>Mortgage basics</h2>
+                <label for="total_millies">Total Price ($M)</label>
+                <input type="number" step="0.01" id="total_millies" value="1.2">
+                <label for="total_dollies">Total Price ($)</label>
+                <input type="text" id="total_dollies" readonly>
+                <label for="deposit">Deposit ($)</label>
+                <input type="number" step="1000" id="deposit" value="300000">
+                <label for="remaining">Remaining Principle ($)</label>
+                <input type="text" id="remaining" readonly>
+                <label for="ratepa">Interest rate (% p.a.)</label>
+                <input type="number" step="0.01" id="ratepa" value="6.5">
+                <label for="termyears">Number of years</label>
+                <input type="number" id="termyears" value="30">
+                <label for="numpayments">Number of payments</label>
+                <input type="text" id="numpayments" readonly>
+                <label for="paymentper">Payment per month</label>
+                <input type="text" id="paymentper" readonly>
+                <label for="totalinterest">Total interest payable</label>
+                <input type="text" id="totalinterest" readonly>
+            </form>
+        </div>
 
-<div id="offset_account_div">
-<form id="offset_account">
-    <h2>Offset account</h2>
-    <label for="offset_starting">Starting Contribution ($)</label><br>
-    <input type="text" id="offset_starting" value="20000"><br>
-    <label for="offset_annual">Annual Contribution ($)</label><br>
-    <input type="text" id="offset_annual" value="10000"><br>
-    <label for="offset_monthly">Monthly Contribution ($)</label><br>
-    <input type="text" id="offset_monthly" value="0"><br>
-</form>
-</div>
-</div>
+        <div id="offset_account_div" class="card">
+            <form id="offset_account">
+                <h2>Offset account</h2>
+                <label for="offset_starting">Starting Contribution ($)</label>
+                <input type="number" step="1000" id="offset_starting" value="20000">
+                <label for="offset_annual">Annual Contribution ($)</label>
+                <input type="number" step="1000" id="offset_annual" value="10000">
+                <label for="offset_monthly">Monthly Contribution ($)</label>
+                <input type="number" step="100" id="offset_monthly" value="0">
+            </form>
+        </div>
+    </div>
 
-<!-- The mortgage lifecycle -->
-<div id="mortgage_lifecycle_div">
-<h2>Mortgage lifecycle</h2>
-<table id="mortgage_lifecycle_table"></table>
+    <!-- Mortgage Graph -->
+    <div id="mortgage_graph_div" class="card" style="margin-bottom:32px;">
+        <h2>Mortgage Overview</h2>
+        <canvas id="mortgageChart" height="80"></canvas>
+    </div>
+
+    <!-- The mortgage lifecycle -->
+    <div id="mortgage_lifecycle_div" class="card">
+        <h2>Mortgage lifecycle</h2>
+        <div class="table-responsive">
+            <table id="mortgage_lifecycle_table"></table>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript" src="mortgauge.js"></script>
