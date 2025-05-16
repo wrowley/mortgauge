@@ -183,20 +183,28 @@ function update_table_and_chart()
     drawMortgageChart(chartLabels, chartLoan, chartOffset, chartEffective);
 }
 
-function drawMortgageChart(labels, loanData, offsetData, effectiveData) {
+function drawMortgageChart(labelData, loanData, offsetData, effectiveData) {
     const ctx = document.getElementById('mortgageChart').getContext('2d');
     if (mortgageChart) {
-        mortgageChart.data.labels = labels;
+
+        mortgageChart.options.scales.x.ticks.callback = 
+            function(value, index, ticks) {
+                return ((index % 12) == 6) ? labelData[index].split('/')[1] : '';
+            }
+        mortgageChart.data.labels = labelData;
         mortgageChart.data.datasets[0].data = loanData;
         mortgageChart.data.datasets[1].data = offsetData;
         mortgageChart.data.datasets[2].data = effectiveData;
         mortgageChart.update();
         return;
     }
+//  if (mortgageChart) {
+//      mortgageChart.destroy();
+//  }
     mortgageChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: labels,
+            labels: labelData,
             datasets: [
                 {
                     label: 'Loan Amount',
@@ -265,7 +273,8 @@ function drawMortgageChart(labels, loanData, offsetData, effectiveData) {
                     ticks: {
                         autoSkip: false,
                         callback: function(value, index, ticks) {
-                            return ((index % 12) == 6) ? labels[index].split('/')[1] : '';
+//                            return ((index % 12) == 6) ?  : '';
+                            return ((index % 12) == 6) ? labelData[index].split('/')[1] : '';
                         },
                         font: {
                             size: 12
