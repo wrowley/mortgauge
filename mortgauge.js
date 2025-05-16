@@ -16,8 +16,10 @@ var total_interest_paid = 0;
 let mortgageChart = null;
 
 // On page load...
-update_all_derived_input_params();
-update_table_and_chart();
+document.addEventListener('DOMContentLoaded', function() {
+    update_all_derived_input_params();
+    update_table_and_chart();
+});
 
 total_millies.addEventListener("input", function (e) {
     update_all_derived_input_params();
