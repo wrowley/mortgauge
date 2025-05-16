@@ -132,6 +132,26 @@ tr:hover td {
     transition: background 0.2s;
 }
 
+#mortgage_graph_div {
+    max-width: 900px;
+    margin: 0 auto 32px auto;
+    width: 100%;
+}
+
+.chart-responsive {
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+}
+
+#mortgage_graph_div canvas {
+    width: 100% !important;
+    height: 320px !important;
+    max-width: 100%;
+    display: block;
+    margin: 0 auto;
+}
+
 @media (max-width: 900px) {
     #mortgage_inputs {
         flex-direction: column;

@@ -49,12 +49,14 @@
                 <input type="number" step="100" id="offset_monthly" value="0">
             </form>
         </div>
-    </div>
+    </div> <!-- end of #mortgage_inputs -->
 
     <!-- Mortgage Graph -->
     <div id="mortgage_graph_div" class="card" style="margin-bottom:32px;">
         <h2>Mortgage Overview</h2>
-        <canvas id="mortgageChart" height="80"></canvas>
+        <div class="chart-responsive">
+            <canvas id="mortgageChart" height="80"></canvas>
+        </div>
     </div>
 
     <!-- The mortgage lifecycle -->

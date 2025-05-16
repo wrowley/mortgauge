@@ -19,7 +19,7 @@ let mortgageChart = null;
 document.addEventListener('DOMContentLoaded', function() {
     update_all_derived_input_params();
     update_table_and_chart();
-});
+}); 
 
 total_millies.addEventListener("input", function (e) {
     update_all_derived_input_params();
